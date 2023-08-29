@@ -1,6 +1,13 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/bhargavkaranam/notes-cli/fs"
+	"path/filepath"
+	"os/exec"
+)
+
+const DIRECTORY_PATH = "Notes/"
 
 type HandlerFunc func()
 
@@ -10,27 +17,46 @@ type StartupOptions struct {
 	Handler HandlerFunc
 }
 
-func CreateNote () {
-	fmt.Println("Create note")
+func createNote () {
+	var title string
+
+	fmt.Println("Enter a title to easily find the note")
+	fmt.Scan(&title)
+
+	constructedFilePath, errorInConstructionFilePath := filepath.Abs(DIRECTORY_PATH + title + ".md")
+
+	if (errorInConstructionFilePath != nil) {
+		panic(errorInConstructionFilePath)
+	}
+
+	filename, err := fs.CreateFile(constructedFilePath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Add the note in your favorite text editor save it!", filename, constructedFilePath)
+
+	exec.Command("code", constructedFilePath).Run()
 }
 
-func ShowAllNotes () {
+func showAllNotes () {
 	fmt.Println("Show all notes")
 }
 
-func Search () {
+func search () {
 	fmt.Println("Search note")
 }
 
-func DeleteAllNotes () {
+func deleteAllNotes () {
 	fmt.Println("Delete all notes")
 }
 
 var StartupOptionsArray = []StartupOptions {
-	StartupOptions{Id: 1, Title: "Create note", Handler: CreateNote, },
-	StartupOptions{Id: 2, Title: "Show all notes", Handler: ShowAllNotes, },
-	StartupOptions{Id: 3, Title: "Search for a note", Handler: Search, },
-	StartupOptions{Id: 4, Title: "Delete all notes", Handler: DeleteAllNotes, },
+	StartupOptions{Id: 1, Title: "Create note", Handler: createNote, },
+	StartupOptions{Id: 2, Title: "Show all notes", Handler: showAllNotes, },
+	StartupOptions{Id: 3, Title: "Search for a note", Handler: search, },
+	StartupOptions{Id: 4, Title: "Delete all notes", Handler: deleteAllNotes, },
 }
 
 func GetStartupOptions () []StartupOptions {

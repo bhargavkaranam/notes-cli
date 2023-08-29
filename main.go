@@ -2,10 +2,16 @@ package main
 
 import (
 	"fmt"
-	"notes-cli/core"
+	"github.com/bhargavkaranam/notes-cli/core"
+	"github.com/bhargavkaranam/notes-cli/fs"
 )
 
+func bootstrap () {
+	fs.CreateDirectoryIfNotExists("Notes")
+}
+
 func main () {
+	bootstrap()
 	fmt.Println("Welcome to the tiny note taking application.")
 
 	var all_options = core.GetStartupOptions()
